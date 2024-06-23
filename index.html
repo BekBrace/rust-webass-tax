@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Define character encoding and viewport settings -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Page title -->
+    <title>Tax Calculator</title>
+    <!-- CSS styles for the page -->
+    <style>
+        body {
+            font-family: Arial, sans-serif; /* Set font family */
+            background-color: #f7f7f7; /* Set background color */
+            color: #333; /* Set text color */
+            display: flex; /* Use flexbox layout */
+            flex-direction: column; /* Arrange elements in a column */
+            align-items: center; /* Center elements horizontally */
+            justify-content: center; /* Center elements vertically */
+            height: 100vh; /* Full viewport height */
+            margin: 0; /* Remove default margin */
+        }
+        h1 {
+            color: #d35400; /* Rust color for heading */
+        }
+        label, input, button {
+            margin: 10px 0; /* Margin for form elements */
+        }
+        input {
+            padding: 8px; /* Padding inside input */
+            font-size: 16px; /* Input font size */
+            border: 2px solid #d35400; /* Rust color border */
+            border-radius: 4px; /* Rounded corners */
+        }
+        button {
+            padding: 10px 20px; /* Padding inside button */
+            font-size: 16px; /* Button font size */
+            background-color: #e67e22; /* Orange color background */
+            color: #fff; /* White text color */
+            border: none; /* Remove border */
+            border-radius: 4px; /* Rounded corners */
+            cursor: pointer; /* Pointer cursor on hover */
+            transition: background-color 0.3s ease; /* Smooth background color transition */
+        }
+        button:hover {
+            background-color: #d35400; /* Darker rust color on hover */
+        }
+        #result {
+            margin-top: 20px; /* Margin above result text */
+            font-size: 18px; /* Result text font size */
+            color: #e67e22; /* Orange color for result text */
+        }
+    </style>
+</head>
+<body>
+    <h1>Tax Calculator</h1>
+    <!-- Label and input for income -->
+    <label for="income">Income: </label>
+    <input type="number" id="income" name="income" min="0">
+    <!-- Button to trigger tax calculation -->
+    <button id="calculateButton">Calculate Tax</button>
+    <!-- Element to display the result -->
+    <p id="result"></p>
+    <!-- JavaScript module for WebAssembly interaction -->
+    <script type="module">
+        import init, { calculate_tax } from "./pkg/tax_calculator_wasm.js";
+
+        async function run() {
+            await init(); // Initialize the WebAssembly module
+
+            function calculateTax() {
+                const income = parseFloat(document.getElementById("income").value); // Get and parse income input
+                const tax = calculate_tax(income); // Calculate tax using WebAssembly function
+                document.getElementById("result").innerText = `Tax: $${tax.toFixed(2)}`; // Display the result
+            }
+
+            document.getElementById("calculateButton").addEventListener("click", calculateTax); // Add event listener to button
+        }
+
+        run(); // Run the async function to set up event listener
+    </script>
+</body>
+</html>
